@@ -76,7 +76,7 @@
         canvas {
             border: 1px solid #ddd;
             background-color: #3C3C3C;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .info {
@@ -84,7 +84,8 @@
             padding: 4px 15px 4px 15px;
             text-align: left;
             border: 1px solid #3498db;
-            border-radius: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
             /* border-color: #3498db; */
         }
         textarea {
@@ -98,20 +99,38 @@
             font-size: 14px;
             color: #074799;
         }
+        button {
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar" id="flowDetails">
-        <h3>Flow Details</h3>
+        <h4>Flow Details</h4>
+        
         <textarea id="flowText" rows="40"></textarea>
     </div>
     <div class="content">
-       
+        <div class="info"> <p>Click on the canvas to add a node.</p></div>
         <canvas id="canvas" width="800" height="600"></canvas>
-        <div class="info"> <p>Click on the canvas to add a node</p></div>
+        <button id="refreshButton" onclick="refreshPage()">Reset</button>
+        
+        <!-- <button id="refreshButton" onclick="refreshPage()">Refresh Page</button> -->
     </div>
     <div class="right-bar">
-        <h3>Distance Table</h3>
+        <!-- <h4>Distance Table</h4> -->
         <table class="table" id="distanceTable">
             <thead>
                 <tr>

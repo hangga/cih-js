@@ -17,6 +17,7 @@ function addNode(x, y) {
     updateDistanceTable();
     draw();
     logFlow(`\nAdded node ${node.id} at (${node.x.toFixed(2)}, ${node.y.toFixed(2)})`);
+    logSubTours();
 }
 
 // Fungsi untuk memperbarui tabel jarak
@@ -65,7 +66,7 @@ function drawLines() {
 
 // Fungsi untuk menggambar rute terpendek dengan warna merah
 function drawShortestPath() {
-    const { tour, subTours } = calculateShortestPath();
+    const { tour } = calculateShortestPath();
     ctx.strokeStyle = '#E82561'; // Garis rute terpendek
     ctx.lineWidth = 3;
     tour.forEach((path) => {
@@ -76,11 +77,6 @@ function drawShortestPath() {
         ctx.lineTo(node2.x, node2.y);
         ctx.stroke();
         ctx.closePath();
-    });
-
-    // Log sub-tours
-    subTours.forEach((subTour, index) => {
-        logFlow(` -> Sub-tour ${index + 1}: ${subTour.map(path => `(${path.from} -> ${path.to})`).join(', ')}`);
     });
 }
 
@@ -106,6 +102,7 @@ function calculateShortestPath() {
     function calculateInsertionCost(tour, newNodeId) {
         let minCost = Infinity;
         let bestInsertion = null;
+        const allPossibleInsertions = [];
 
         for (let i = 0; i < tour.length; i++) {
             const current = tour[i];
@@ -114,25 +111,35 @@ function calculateShortestPath() {
             const distanceNewTo = getDistance(newNodeId, current.to);
             const insertionCost = distanceNewFrom + distanceNewTo - distanceCurrent;
 
+            allPossibleInsertions.push({ from: current.from, to: current.to, newNodeId, insertionCost });
+
             if (insertionCost < minCost) {
                 minCost = insertionCost;
                 bestInsertion = { from: current.from, to: current.to, newNodeId };
             }
         }
 
-        return bestInsertion;
+        return { bestInsertion, allPossibleInsertions };
     }
 
     // Tambahkan node lain ke dalam tour menggunakan CIH
     for (let i = 2; i < nodes.length; i++) {
         const newNodeId = nodes[i].id;
-        const bestInsertion = calculateInsertionCost(tour, newNodeId);
+        const { bestInsertion, allPossibleInsertions } = calculateInsertionCost(tour, newNodeId);
+
+        // Log semua kemungkinan sub-tours
+        allPossibleInsertions.forEach((insertion, index) => {
+            const tempTour = tour.filter(edge => edge.from !== insertion.from || edge.to !== insertion.to);
+            tempTour.push({ from: insertion.from, to: insertion.newNodeId });
+            tempTour.push({ from: insertion.newNodeId, to: insertion.to });
+            subTours.push([...tempTour]);
+        });
 
         if (bestInsertion) {
             // Sisipkan node baru ke dalam tour
             tour = tour.filter(edge => edge.from !== bestInsertion.from || edge.to !== bestInsertion.to);
-            tour.push({ from: bestInsertion.from, to: newNodeId });
-            tour.push({ from: newNodeId, to: bestInsertion.to });
+            tour.push({ from: bestInsertion.from, to: bestInsertion.newNodeId });
+            tour.push({ from: bestInsertion.newNodeId, to: bestInsertion.to });
 
             // Simpan sub-tour saat ini
             subTours.push([...tour]);
@@ -174,6 +181,14 @@ function logFlow(message) {
     flowText.scrollTop = flowText.scrollHeight;
 }
 
+// Fungsi untuk mencatat sub-tours
+function logSubTours() {
+    const { subTours } = calculateShortestPath();
+    subTours.forEach((subTour, index) => {
+        logFlow(` -> Sub-tour ${index + 1}: ${subTour.map(path => `(${path.from} -> ${path.to})`).join(', ')}`);
+    });
+}
+
 // Tambahkan event listener untuk klik pada kanvas
 canvas.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -181,3 +196,7 @@ canvas.addEventListener('click', (event) => {
     const y = event.clientY - rect.top;
     addNode(x, y);
 });
+
+function refreshPage() {
+    location.reload();
+}

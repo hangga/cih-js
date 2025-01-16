@@ -16,7 +16,7 @@ function addNode(x, y) {
     nodes.push(node);
     updateDistanceTable();
     draw();
-    logFlow(`Added node ${node.id} at (${node.x.toFixed(2)}, ${node.y.toFixed(2)})`);
+    logFlow(`\nAdded node ${node.id} at (${node.x.toFixed(2)}, ${node.y.toFixed(2)})`);
 }
 
 // Fungsi untuk memperbarui tabel jarak
@@ -80,7 +80,7 @@ function drawShortestPath() {
 
     // Log sub-tours
     subTours.forEach((subTour, index) => {
-        logFlow(`Sub-tour ${index + 1}: ${subTour.map(path => `(${path.from} -> ${path.to})`).join(', ')}`);
+        logFlow(` -> Sub-tour ${index + 1}: ${subTour.map(path => `(${path.from} -> ${path.to})`).join(', ')}`);
     });
 }
 
@@ -147,14 +147,14 @@ function drawNodes() {
     nodes.forEach(node => {
         // Menggambar simpul
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 20, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, 16, 0, Math.PI * 2);
         ctx.fillStyle = '#16C47F';
         ctx.fill();
         ctx.closePath();
 
         // Menambahkan label pada simpul
         ctx.fillStyle = 'black';
-        ctx.font = '14px Arial';
+        ctx.font = '16px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(node.id, node.x, node.y);

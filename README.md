@@ -6,12 +6,6 @@ This is the JavaScript version of the [CIH](https://github.com/hangga/CIH) proje
 
 This project is a reimplementation of the CIH application, which was previously developed using the Pascal/Delphi programming languages. This version is written in plain JavaScript and HTML to keep it simple and accessible without any need for npm or other package managers.
 
-## Features
-
-- **Feature 1:** Description of feature 1.
-- **Feature 2:** Description of feature 2.
-- **Feature 3:** Description of feature 3.
-
 ## Setup
 
 To use this project, simply download the repository and open the `index.html` file in your browser. No additional installation steps are required.
@@ -29,6 +23,7 @@ To use this project, simply download the repository and open the `index.html` fi
 ## Usage
 
 Once you have the project open in your browser, you can start using the application directly.
+You can also try it live <a href="https://hangga.github.io/cih-js/" target="_blank">here.</a>
 
 ## Contribution
 

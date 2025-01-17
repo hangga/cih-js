@@ -1,5 +1,7 @@
 # CIH JavaScript Version
 
+<img src="https://github.com/hangga/cih-js/blob/main/cih-screenshot.png?raw=true" width="90%"/>
+
 This is the JavaScript version of the [CIH](https://github.com/hangga/CIH) project that was originally written in Pascal/Delphi.
 
 ## Description

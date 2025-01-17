@@ -1,4 +1,4 @@
-# CIH JavaScript Version
+# Cheapest Insertion Heuristic(CIH) Algorithm JS Implementation
 
 <img src="https://github.com/hangga/cih-js/blob/main/cih-screenshot.png?raw=true" width="100%"/>
 

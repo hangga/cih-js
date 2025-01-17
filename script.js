@@ -48,7 +48,7 @@ function calculateDistance(node1, node2) {
 
 // Fungsi untuk menggambar garis antara simpul-simpul pada kanvas
 function drawLines() {
-    ctx.strokeStyle = '#8174A0'; // Garis default berwarna putih
+    ctx.strokeStyle = '#8174A0'; // Garis default berwarna abu-abu keunguan
     ctx.lineWidth = 2;
     nodes.forEach((node1, index1) => {
         nodes.forEach((node2, index2) => {
@@ -64,7 +64,7 @@ function drawLines() {
     drawShortestPath();
 }
 
-// Fungsi untuk menggambar rute terpendek dengan warna merah
+// Fungsi untuk menggambar rute terpendek dengan warna merah gaul
 function drawShortestPath() {
     const { tour } = calculateShortestPath();
     ctx.strokeStyle = '#E82561'; // Garis rute terpendek

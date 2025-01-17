@@ -4,7 +4,7 @@
 
 This is the JavaScript version of the [CIH](https://github.com/hangga/CIH) project that was originally written in Pascal/Delphi.
 
-<a href="https://hangga.github.io/cih-js/" target="_blank"><h3>Live Demo.</h3></a>
+<h3><a href="https://hangga.github.io/cih-js/" target="_blank">Live Demo >></a></h3>
 
 ## Description
 

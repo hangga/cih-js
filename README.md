@@ -4,6 +4,8 @@
 
 This is the JavaScript version of the [CIH](https://github.com/hangga/CIH) project that was originally written in Pascal/Delphi.
 
+<a href="https://hangga.github.io/cih-js/" target="_blank"><h3>Live Demo.</h3></a>
+
 ## Description
 
 This project is a reimplementation of the CIH application, which was previously developed using the Pascal/Delphi programming languages. This version is written in plain JavaScript and HTML to keep it simple and accessible without any need for npm or other package managers.

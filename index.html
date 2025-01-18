@@ -5,143 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CIH Project</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
-            display: flex;
-            height: 100vh;
-            color: #333;
-        }
-        .sidebar, .right-bar {
-            width: 300px;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            height: 100vh;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-        .content {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-        h2, h3 {
-            margin-top: 0;
-            color: #444;
-        }
-        .node {
-            width: 50px;
-            height: 50px;
-            background-color: #3498db;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .table th, .table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #f2f2f2;
-        }
-        .table th {
-            background-color: #3498db;
-            color: #ffffff;
-            font-weight: 500;
-        }
-        .table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .table tr:hover {
-            background-color: #f1f1f1;
-        }
-        
-        canvas {
-            border: 1px solid #ddd;
-            background-color: #3C3C3C;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .info {
-            background-color: #D9EAFD;
-            padding: 4px 15px 4px 15px;
-            text-align: left;
-            border: 1px solid #3498db;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            /* border-color: #3498db; */
-        }
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: none;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            color: #074799;
-        }
-        button {
-            padding: 10px 20px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            border: none;
-            background-color: #3498db;
-            color: white;
-            font-size: 16px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    <link rel='stylesheet' href='style.css' type='text/css' media='all' />
 </head>
 <body>
-    <div class="sidebar" id="flowDetails">
-        <h4>Flow Details</h4>
-        
-        <textarea id="flowText" rows="40"></textarea>
+    <div class="main-content">
+        <div class="content">
+            <div class="info"> <p>Click on the canvas to add a node.</p></div>
+            <canvas id="canvas" width="800" height="580"></canvas>
+            <button id="refreshButton" onclick="refreshPage()">Reset</button>
+        </div>
+        <div class="right-bar">
+    
+            <ul class="tabs">
+                <li class="active" data-tab="tab1">Flow Details</li>
+                <li data-tab="tab2">Distance Table</li>
+            </ul>
+              
+            <div id="tab1" class="tab-content active">
+                <textarea id="flowText" rows="100%"></textarea>
+            </div>
+            
+            <div id="tab2" class="tab-content">
+                <table class="table" id="distanceTable">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Distance</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+    
+        </div>
     </div>
-    <div class="content">
-        <div class="info"> <p>Click on the canvas to add a node.</p></div>
-        <canvas id="canvas" width="800" height="600"></canvas>
-        <button id="refreshButton" onclick="refreshPage()">Reset</button>
-        
-        <!-- <button id="refreshButton" onclick="refreshPage()">Refresh Page</button> -->
-    </div>
-    <div class="right-bar">
-        <!-- <h4>Distance Table</h4> -->
-        <table class="table" id="distanceTable">
-            <thead>
-                <tr>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Distance</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <footer>
+        <p>&copy; 2025 CIH Project | Crafted with <span style="color: #e74c3c;">&#9829;</span> by Hangga Aji Sayekti</p>
+    </footer>
+    
     <script src="script.js"></script>
+    <script>
+        // script untuk mengatur pergantian tab
+        const tabs = document.querySelectorAll('.tabs li');
+        const contents = document.querySelectorAll('.tab-content');
+      
+        tabs.forEach(tab => {
+          tab.addEventListener('click', () => {
+            // Hapus class 'active' dari semua tab dan konten
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+      
+            // Tambahkan class 'active' pada tab yang diklik
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+          });
+        });
+      </script>
 </body>
+
 </html>

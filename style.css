@@ -1,0 +1,228 @@
+
+
+html, body {
+	font-family: 'Roboto', sans-serif;
+    height: 100%;
+    /* margin: 0; */
+    flex-direction: column;
+	/* margin: 0; */
+	padding: 0;
+    background-color: #2c3e50;
+	/* background: linear-gradient(135deg, #2c3e50, #4ca1af); */
+	/* display: flex; */
+	color: #333;
+}
+
+.main-content {
+    padding: 0;
+    /* background-color: red; */
+    /* flex: 1; Memastikan konten utama mengambil sisa ruang */
+    display: flex;
+    flex-direction: row; 
+    /* Jika ingin sidebar dan content di sebelah kanan */
+    margin-bottom : 0px; 
+    margin-top: 0px;
+    /* 60px; Sesuaikan dengan tinggi footer */
+}
+
+.scroll-container {
+	max-height: 600px;
+	overflow-y: auto;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	backdrop-filter: blur(10px);
+	border-radius: 10px;
+	padding: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar,
+.right-bar {
+	width: 600px;
+	padding: 20px;
+	background: rgba(255, 255, 255, 0.8);
+	/* backdrop-filter: blur(10px); */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	height: 94vh;
+	overflow-y: auto;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+}
+
+.content {
+	width: 1000px;
+	flex: 1;
+	padding: 0px 16px 16px 16px;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+}
+
+h2,
+h3 {
+	margin-top: 0;
+	color: #ffffff;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.node {
+	width: 50px;
+	height: 50px;
+	background: linear-gradient(135deg, #3498db, #2980b9);
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	cursor: pointer;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node:hover {
+	transform: scale(1.1);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+	background: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(5px);
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+.table th,
+.table td {
+	padding: 12px 15px;
+	text-align: left;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.table th {
+	background: linear-gradient(135deg, #3498db, #2980b9);
+	color: white;
+	font-weight: 500;
+}
+
+.table tr:nth-child(even) {
+	background: rgba(255, 255, 255, 0.6);
+}
+
+.table tr:hover {
+	background: rgba(255, 255, 255, 0.9);
+}
+
+canvas {
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	background-color: #3c3c3c;
+	margin-bottom: 14px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+}
+
+.info {
+	background: rgba(217, 234, 253, 0.8);
+	/* backdrop-filter: blur(10px); */
+	padding: 8px 15px;
+	border: 1px solid #3498db;
+	border-radius: 10px;
+	margin-bottom: 20px;
+    margin-top: 0;
+}
+
+textarea {
+	width: 100%;
+	padding: 10px;
+	background: rgba(48, 49, 54, 0.9);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 10px;
+	resize: none;
+	box-sizing: border-box;
+	font-family: 'Roboto Mono', monospace;
+	font-size: 14px;
+	color: #0fff03;
+}
+
+button {
+	padding: 10px 20px;
+	margin-bottom: 20px;
+	cursor: pointer;
+	border: none;
+	background: linear-gradient(135deg, #3498db, #2980b9);
+	color: white;
+	font-size: 16px;
+	border-radius: 10px;
+	transition: background 0.3s ease, transform 0.2s ease;
+	width: 100%;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+	background: linear-gradient(135deg, #2980b9, #3498db);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tabs {
+	display: flex;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tabs li {
+	font-size: 14px;
+	padding: 10px 20px;
+	margin: 0;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-bottom: none;
+	transition: background 0.3s ease, color 0.3s ease;
+}
+
+.tabs li.active {
+	background: linear-gradient(135deg, #3498db, #2980b9);
+	color: white;
+	border-top: 2px solid #007bff;
+}
+
+.tab-content {
+	overflow-y: auto;
+	display: none;
+	padding: 20px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-top: none;
+	background: rgba(255, 255, 255, 0.8);
+	backdrop-filter: blur(10px);
+}
+
+.tab-content.active {
+	display: block;
+}
+
+footer {
+    margin: 0;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 14px;
+    width: 100%;
+
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    position: relative; 
+    /* Default: mengikuti alur dokumen */
+}
+
+footer span {
+    font-weight: bold;
+}
+
+footer p {
+    margin: 0;
+}

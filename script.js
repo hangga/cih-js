@@ -1,11 +1,12 @@
 let nodes = [];
 let nodeCount = 0;
+let stepCount = 0; // untuk melacak stepnya
 const distanceTableBody = document.querySelector('#distanceTable tbody');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const flowText = document.getElementById('flowText');
 
-// Fungsi untuk menambahkan simpul baru
+// untuk menambahkan simpul baru
 function addNode(x, y) {
     nodeCount++;
     const node = {
@@ -16,11 +17,13 @@ function addNode(x, y) {
     nodes.push(node);
     updateDistanceTable();
     draw();
-    logFlow(`\nAdded node ${node.id} at (${node.x.toFixed(2)}, ${node.y.toFixed(2)})`);
+
+    logFlow(`Added node ${node.id} at coordinates (${node.x.toFixed(2)}, ${node.y.toFixed(2)})`);
+    logFlow(`Recomputing sub-tours after adding node ${node.id}`);
     logSubTours();
 }
 
-// Fungsi untuk memperbarui tabel jarak
+// untuk memperbarui tabel jarak
 function updateDistanceTable() {
     distanceTableBody.innerHTML = '';
     nodes.forEach((node1, index1) => {
@@ -37,6 +40,26 @@ function updateDistanceTable() {
             }
         });
     });
+}
+
+// Fungsi untuk mengurutkan tour berdasarkan jalur yang berkelanjutan
+function orderTour(tour) {
+    if (tour.length === 0) return [];
+
+    const orderedTour = [tour[0]];
+    let currentTo = tour[0].to;
+
+    while (orderedTour.length < tour.length) {
+        const nextPath = tour.find(path => path.from === currentTo);
+        if (nextPath) {
+            orderedTour.push(nextPath);
+            currentTo = nextPath.to;
+        } else {
+            break;
+        }
+    }
+
+    return orderedTour;
 }
 
 // Fungsi untuk menghitung jarak antara dua simpul
@@ -64,10 +87,10 @@ function drawLines() {
     drawShortestPath();
 }
 
-// Fungsi untuk menggambar rute terpendek dengan warna merah gaul
+// Fungsi untuk menggambar rute terpendek dengan warna hijau
 function drawShortestPath() {
     const { tour } = calculateShortestPath();
-    ctx.strokeStyle = '#E82561'; // Garis rute terpendek
+    ctx.strokeStyle = 'lime'; // Garis rute terpendek
     ctx.lineWidth = 3;
     tour.forEach((path) => {
         const node1 = nodes[path.from - 1];
@@ -80,6 +103,37 @@ function drawShortestPath() {
     });
 }
 
+// Fungsi untuk menghitung jarak antara dua node berdasarkan ID
+function getDistance(id1, id2) {
+    const node1 = nodes.find(node => node.id === id1);
+    const node2 = nodes.find(node => node.id === id2);
+    return calculateDistance(node1, node2);
+}
+
+// Fungsi untuk menghitung biaya penambahan node baru ke dalam tour
+function calculateInsertionCost(tour, newNodeId) {
+    let minCost = Infinity;
+    let bestInsertion = null;
+    const allPossibleInsertions = [];
+
+    for (let i = 0; i < tour.length; i++) {
+        const current = tour[i];
+        const distanceCurrent = getDistance(current.from, current.to);
+        const distanceNewFrom = getDistance(current.from, newNodeId);
+        const distanceNewTo = getDistance(newNodeId, current.to);
+        const insertionCost = distanceNewFrom + distanceNewTo - distanceCurrent;
+
+        allPossibleInsertions.push({ from: current.from, to: current.to, newNodeId, insertionCost });
+
+        if (insertionCost < minCost) {
+            minCost = insertionCost;
+            bestInsertion = { from: current.from, to: current.to, newNodeId };
+        }
+    }
+
+    return { bestInsertion, allPossibleInsertions };
+}
+
 // Fungsi untuk menghitung rute terpendek menggunakan algoritma CIH
 function calculateShortestPath() {
     if (nodes.length < 2) return { tour: [], subTours: [] };
@@ -90,37 +144,6 @@ function calculateShortestPath() {
         { from: nodes[1].id, to: nodes[0].id }
     ];
     const subTours = [[...tour]];
-
-    // Fungsi untuk mendapatkan jarak antara dua node berdasarkan ID
-    function getDistance(id1, id2) {
-        const node1 = nodes.find(node => node.id === id1);
-        const node2 = nodes.find(node => node.id === id2);
-        return calculateDistance(node1, node2);
-    }
-
-    // Fungsi untuk menghitung biaya penambahan node baru ke dalam tour
-    function calculateInsertionCost(tour, newNodeId) {
-        let minCost = Infinity;
-        let bestInsertion = null;
-        const allPossibleInsertions = [];
-
-        for (let i = 0; i < tour.length; i++) {
-            const current = tour[i];
-            const distanceCurrent = getDistance(current.from, current.to);
-            const distanceNewFrom = getDistance(current.from, newNodeId);
-            const distanceNewTo = getDistance(newNodeId, current.to);
-            const insertionCost = distanceNewFrom + distanceNewTo - distanceCurrent;
-
-            allPossibleInsertions.push({ from: current.from, to: current.to, newNodeId, insertionCost });
-
-            if (insertionCost < minCost) {
-                minCost = insertionCost;
-                bestInsertion = { from: current.from, to: current.to, newNodeId };
-            }
-        }
-
-        return { bestInsertion, allPossibleInsertions };
-    }
 
     // Tambahkan node lain ke dalam tour menggunakan CIH
     for (let i = 2; i < nodes.length; i++) {
@@ -149,19 +172,63 @@ function calculateShortestPath() {
     return { tour, subTours };
 }
 
+// Fungsi untuk menghitung total jarak sebuah sub-tour
+function calculateTourDistance(tour) {
+    return tour.reduce((total, path) => total + getDistance(path.from, path.to), 0);
+}
+
+// Fungsi untuk mencatat langkah-langkah flow
+function logFlow(message, isFinal = false) {
+    const formattedMessage = `Step ${stepCount}: ${message}`;
+    const logEntry = document.createElement('div');
+    logEntry.textContent = formattedMessage;
+
+    // Tambahkan warna khusus jika ini adalah final chosen sub-tour
+    if (isFinal) {
+        logEntry.style.color = '#0fff03'; // warna chosen sub-tour
+    }
+
+    flowText.appendChild(logEntry);
+    flowText.scrollTop = flowText.scrollHeight;
+    stepCount++;
+}
+
+// Fungsi untuk mencatat sub-tours dengan format lebih mudah dibaca
+function logSubTours() {
+    const { subTours } = calculateShortestPath();
+    const chosenSubTour = subTours[subTours.length - 1]; // Sub-tour terakhir adalah yang terpilih
+
+    logFlow('Evaluating sub-tours:');
+    subTours.forEach((subTour, index) => {
+        const isChosen = subTour === chosenSubTour;
+        const subTourDetails = subTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
+        const totalDistance = calculateTourDistance(subTour).toFixed(2);
+        logFlow(`Sub-tour ${index + 1}: ${subTourDetails}, Total Distance: ${totalDistance}${isChosen ? ' is chosen' : ''}`, isChosen);
+    });
+
+    if (chosenSubTour) {
+        const orderedTour = orderTour(chosenSubTour);
+        const orderedDetails = orderedTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
+        logFlow(`Final chosen: ${orderedDetails}`, true); // Teks berwarna untuk final
+    }
+}
+
 // Fungsi untuk menggambar simpul pada kanvas
 function drawNodes() {
     nodes.forEach(node => {
         // Menggambar simpul
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 16, 0, Math.PI * 2);
-        ctx.fillStyle = '#16C47F';
+        ctx.arc(node.x, node.y, 14, 0, Math.PI * 2);
+        ctx.fillStyle = '#4635B1';
         ctx.fill();
+        ctx.strokeStyle = '#B771E5';
+        ctx.lineWidth = 3;
+        ctx.stroke(); 
         ctx.closePath();
 
         // Menambahkan label pada simpul
-        ctx.fillStyle = 'black';
-        ctx.font = '16px Arial';
+        ctx.fillStyle = 'yellow';
+        ctx.font = '14px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(node.id, node.x, node.y);
@@ -175,20 +242,6 @@ function draw() {
     drawNodes();
 }
 
-// Fungsi untuk mencatat langkah-langkah flow
-function logFlow(message) {
-    flowText.value += message + '\n';
-    flowText.scrollTop = flowText.scrollHeight;
-}
-
-// Fungsi untuk mencatat sub-tours
-function logSubTours() {
-    const { subTours } = calculateShortestPath();
-    subTours.forEach((subTour, index) => {
-        logFlow(` -> Sub-tour ${index + 1}: ${subTour.map(path => `(${path.from} -> ${path.to})`).join(', ')}`);
-    });
-}
-
 // Tambahkan event listener untuk klik pada kanvas
 canvas.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -197,6 +250,22 @@ canvas.addEventListener('click', (event) => {
     addNode(x, y);
 });
 
-function refreshPage() {
-    location.reload();
+function resetApp() {
+    // Hapus semua node
+    nodes = [];
+    nodeCount = 0;
+    stepCount = 0;
+
+    // Kosongkan tabel jarak
+    distanceTableBody.innerHTML = '';
+
+    // Kosongkan log flow
+    flowText.value = '';
+    flowText.innerText = '';
+
+    // Bersihkan canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Log pesan bahwa aplikasi telah direset
+    // logFlow("Application has been reset.");
 }

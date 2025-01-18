@@ -1,12 +1,12 @@
 let nodes = [];
 let nodeCount = 0;
-let stepCount = 0; // Variabel global untuk melacak langkah
+let stepCount = 0; // untuk melacak stepnya
 const distanceTableBody = document.querySelector('#distanceTable tbody');
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const flowText = document.getElementById('flowText');
 
-// Fungsi untuk menambahkan simpul baru
+// untuk menambahkan simpul baru
 function addNode(x, y) {
     nodeCount++;
     const node = {
@@ -23,7 +23,7 @@ function addNode(x, y) {
     logSubTours();
 }
 
-// Fungsi untuk memperbarui tabel jarak
+// untuk memperbarui tabel jarak
 function updateDistanceTable() {
     distanceTableBody.innerHTML = '';
     nodes.forEach((node1, index1) => {
@@ -90,7 +90,7 @@ function drawLines() {
 // Fungsi untuk menggambar rute terpendek dengan warna merah gaul
 function drawShortestPath() {
     const { tour } = calculateShortestPath();
-    ctx.strokeStyle = '#E82561'; // Garis rute terpendek
+    ctx.strokeStyle =  'lime'; //'#E82561'; // Garis rute terpendek
     ctx.lineWidth = 3;
     tour.forEach((path) => {
         const node1 = nodes[path.from - 1];
@@ -178,14 +178,17 @@ function drawNodes() {
     nodes.forEach(node => {
         // Menggambar simpul
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 16, 0, Math.PI * 2);
-        ctx.fillStyle = '#16C47F';
+        ctx.arc(node.x, node.y, 14, 0, Math.PI * 2);
+        ctx.fillStyle = '#4635B1';
         ctx.fill();
+        ctx.strokeStyle = '#B771E5';
+        ctx.lineWidth = 3;
+        ctx.stroke(); 
         ctx.closePath();
 
         // Menambahkan label pada simpul
-        ctx.fillStyle = 'black';
-        ctx.font = '16px Arial';
+        ctx.fillStyle = 'yellow';
+        ctx.font = '14px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(node.id, node.x, node.y);
@@ -200,13 +203,22 @@ function draw() {
 }
 
 // Fungsi untuk mencatat langkah-langkah flow
-function logFlow(message) {
-    
+function logFlow(message, isFinal = false) {
     const formattedMessage = `Step ${stepCount}: ${message}`;
-    flowText.value += formattedMessage + '\n';
+    const logEntry = document.createElement('div');
+    logEntry.textContent = formattedMessage;
+
+    // Tambahkan warna khusus jika ini adalah final chosen sub-tour
+    if (isFinal) {
+        logEntry.style.color = '#0fff03'; // warna chosen sub-tour
+        // logEntry.style.fontWeight = 'bold'; // Tambahkan gaya bold
+    }
+
+    flowText.appendChild(logEntry);
     flowText.scrollTop = flowText.scrollHeight;
     stepCount++;
 }
+
 
 // Fungsi untuk mencatat sub-tours dengan format lebih mudah dibaca
 function logSubTours() {
@@ -215,17 +227,18 @@ function logSubTours() {
 
     logFlow('Evaluating sub-tours:');
     subTours.forEach((subTour, index) => {
-        const isChosen = subTour === chosenSubTour ? ' is chosen' : '';
+        const isChosen = subTour === chosenSubTour;
         const subTourDetails = subTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
-        logFlow(`Sub-tour ${index + 1}: ${subTourDetails} ${isChosen}`);
+        logFlow(`Sub-tour ${index + 1}: ${subTourDetails}${isChosen ? ' is chosen' : ''}`, isChosen);
     });
 
     if (chosenSubTour) {
         const orderedTour = orderTour(chosenSubTour);
         const orderedDetails = orderedTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
-        logFlow(`Final chosen sub-tour: ${orderedDetails}`);
+        logFlow(`Final chosen: ${orderedDetails}`, true); // Teks berwarna untuk final
     }
 }
+
 
 // Tambahkan event listener untuk klik pada kanvas
 canvas.addEventListener('click', (event) => {
@@ -235,6 +248,22 @@ canvas.addEventListener('click', (event) => {
     addNode(x, y);
 });
 
-function refreshPage() {
-    location.reload();
+function resetApp() {
+    // Hapus semua node
+    nodes = [];
+    nodeCount = 0;
+    stepCount = 0;
+
+    // Kosongkan tabel jarak
+    distanceTableBody.innerHTML = '';
+
+    // Kosongkan log flow
+    flowText.value = '';
+    flowText.innerText = '';
+
+    // Bersihkan canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Log pesan bahwa aplikasi telah direset
+    // logFlow("Application has been reset.");
 }

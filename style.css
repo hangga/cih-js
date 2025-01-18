@@ -25,7 +25,7 @@ html, body {
     /* 60px; Sesuaikan dengan tinggi footer */
 }
 
-.scroll-container {
+/* .scroll-container {
 	max-height: 600px;
 	overflow-y: auto;
 	border: 1px solid rgba(255, 255, 255, 0.2);
@@ -33,7 +33,7 @@ html, body {
 	border-radius: 10px;
 	padding: 10px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+} */
 
 .sidebar,
 .right-bar {
@@ -42,7 +42,7 @@ html, body {
 	background: rgba(255, 255, 255, 0.8);
 	/* backdrop-filter: blur(10px); */
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-	height: 94vh;
+	height: 92vh;
 	overflow-y: auto;
 	box-sizing: border-box;
 	display: flex;
@@ -66,7 +66,7 @@ h3 {
 	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.node {
+/* .node {
 	width: 50px;
 	height: 50px;
 	background: linear-gradient(135deg, #3498db, #2980b9);
@@ -74,7 +74,6 @@ h3 {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: white;
 	cursor: pointer;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -83,7 +82,7 @@ h3 {
 .node:hover {
 	transform: scale(1.1);
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
+} */
 
 .table {
 	width: 100%;
@@ -134,7 +133,7 @@ canvas {
     margin-top: 0;
 }
 
-textarea {
+#flowText {
 	width: 100%;
 	padding: 10px;
 	background: rgba(48, 49, 54, 0.9);
@@ -144,7 +143,9 @@ textarea {
 	box-sizing: border-box;
 	font-family: 'Roboto Mono', monospace;
 	font-size: 14px;
-	color: #0fff03;
+    color: #F5ECD5;
+	/* color: #0fff03; */
+    overflow-y: auto; height: 100vh; border: 1px solid #ccc; padding: 10px;
 }
 
 button {

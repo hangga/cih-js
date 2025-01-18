@@ -12,17 +12,19 @@
         <div class="content">
             <div class="info"> <p>Click on the canvas to add a node.</p></div>
             <canvas id="canvas" width="800" height="580"></canvas>
-            <button id="refreshButton" onclick="refreshPage()">Reset</button>
+            <button id="refreshButton" onclick="resetApp()">Reset</button>
         </div>
         <div class="right-bar">
     
             <ul class="tabs">
-                <li class="active" data-tab="tab1">Flow Details</li>
+                <li class="active" data-tab="tab1">Log - Flow Details</li>
                 <li data-tab="tab2">Distance Table</li>
             </ul>
               
             <div id="tab1" class="tab-content active">
-                <textarea id="flowText" rows="100%"></textarea>
+                <!-- <textarea id="flowText" rows="100%"></textarea> -->
+                <div id="flowText" ></div>
+
             </div>
             
             <div id="tab2" class="tab-content">

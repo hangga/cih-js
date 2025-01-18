@@ -87,10 +87,10 @@ function drawLines() {
     drawShortestPath();
 }
 
-// Fungsi untuk menggambar rute terpendek dengan warna merah gaul
+// Fungsi untuk menggambar rute terpendek dengan warna hijau
 function drawShortestPath() {
     const { tour } = calculateShortestPath();
-    ctx.strokeStyle =  'lime'; //'#E82561'; // Garis rute terpendek
+    ctx.strokeStyle = 'lime'; // Garis rute terpendek
     ctx.lineWidth = 3;
     tour.forEach((path) => {
         const node1 = nodes[path.from - 1];
@@ -103,7 +103,7 @@ function drawShortestPath() {
     });
 }
 
-// Fungsi untuk mendapatkan jarak antara dua node berdasarkan ID
+// Fungsi untuk menghitung jarak antara dua node berdasarkan ID
 function getDistance(id1, id2) {
     const node1 = nodes.find(node => node.id === id1);
     const node2 = nodes.find(node => node.id === id2);
@@ -144,7 +144,6 @@ function calculateShortestPath() {
         { from: nodes[1].id, to: nodes[0].id }
     ];
     const subTours = [[...tour]];
-   
 
     // Tambahkan node lain ke dalam tour menggunakan CIH
     for (let i = 2; i < nodes.length; i++) {
@@ -171,6 +170,47 @@ function calculateShortestPath() {
     }
 
     return { tour, subTours };
+}
+
+// Fungsi untuk menghitung total jarak sebuah sub-tour
+function calculateTourDistance(tour) {
+    return tour.reduce((total, path) => total + getDistance(path.from, path.to), 0);
+}
+
+// Fungsi untuk mencatat langkah-langkah flow
+function logFlow(message, isFinal = false) {
+    const formattedMessage = `Step ${stepCount}: ${message}`;
+    const logEntry = document.createElement('div');
+    logEntry.textContent = formattedMessage;
+
+    // Tambahkan warna khusus jika ini adalah final chosen sub-tour
+    if (isFinal) {
+        logEntry.style.color = '#0fff03'; // warna chosen sub-tour
+    }
+
+    flowText.appendChild(logEntry);
+    flowText.scrollTop = flowText.scrollHeight;
+    stepCount++;
+}
+
+// Fungsi untuk mencatat sub-tours dengan format lebih mudah dibaca
+function logSubTours() {
+    const { subTours } = calculateShortestPath();
+    const chosenSubTour = subTours[subTours.length - 1]; // Sub-tour terakhir adalah yang terpilih
+
+    logFlow('Evaluating sub-tours:');
+    subTours.forEach((subTour, index) => {
+        const isChosen = subTour === chosenSubTour;
+        const subTourDetails = subTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
+        const totalDistance = calculateTourDistance(subTour).toFixed(2);
+        logFlow(`Sub-tour ${index + 1}: ${subTourDetails}, Total Distance: ${totalDistance}${isChosen ? ' is chosen' : ''}`, isChosen);
+    });
+
+    if (chosenSubTour) {
+        const orderedTour = orderTour(chosenSubTour);
+        const orderedDetails = orderedTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
+        logFlow(`Final chosen: ${orderedDetails}`, true); // Teks berwarna untuk final
+    }
 }
 
 // Fungsi untuk menggambar simpul pada kanvas
@@ -201,44 +241,6 @@ function draw() {
     drawLines();
     drawNodes();
 }
-
-// Fungsi untuk mencatat langkah-langkah flow
-function logFlow(message, isFinal = false) {
-    const formattedMessage = `Step ${stepCount}: ${message}`;
-    const logEntry = document.createElement('div');
-    logEntry.textContent = formattedMessage;
-
-    // Tambahkan warna khusus jika ini adalah final chosen sub-tour
-    if (isFinal) {
-        logEntry.style.color = '#0fff03'; // warna chosen sub-tour
-        // logEntry.style.fontWeight = 'bold'; // Tambahkan gaya bold
-    }
-
-    flowText.appendChild(logEntry);
-    flowText.scrollTop = flowText.scrollHeight;
-    stepCount++;
-}
-
-
-// Fungsi untuk mencatat sub-tours dengan format lebih mudah dibaca
-function logSubTours() {
-    const { subTours } = calculateShortestPath();
-    const chosenSubTour = subTours[subTours.length - 1]; // Sub-tour terakhir adalah yang terpilih
-
-    logFlow('Evaluating sub-tours:');
-    subTours.forEach((subTour, index) => {
-        const isChosen = subTour === chosenSubTour;
-        const subTourDetails = subTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
-        logFlow(`Sub-tour ${index + 1}: ${subTourDetails}${isChosen ? ' is chosen' : ''}`, isChosen);
-    });
-
-    if (chosenSubTour) {
-        const orderedTour = orderTour(chosenSubTour);
-        const orderedDetails = orderedTour.map(path => `(${path.from} -> ${path.to})`).join(', ');
-        logFlow(`Final chosen: ${orderedDetails}`, true); // Teks berwarna untuk final
-    }
-}
-
 
 // Tambahkan event listener untuk klik pada kanvas
 canvas.addEventListener('click', (event) => {

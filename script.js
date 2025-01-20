@@ -219,16 +219,18 @@ function drawNodes() {
         // Menggambar simpul
         ctx.beginPath();
         ctx.arc(node.x, node.y, 14, 0, Math.PI * 2);
-        ctx.fillStyle = '#4635B1';
+        ctx.fillStyle = '#C30E59';
         ctx.fill();
-        ctx.strokeStyle = '#B771E5';
-        ctx.lineWidth = 3;
+        
+        // stroke simpul
+        ctx.strokeStyle = '#DA498D';
+        ctx.lineWidth = 1.5;
         ctx.stroke(); 
         ctx.closePath();
 
-        // Menambahkan label pada simpul
-        ctx.fillStyle = 'yellow';
-        ctx.font = '14px Arial';
+        // label pada simpul
+        ctx.fillStyle = 'white';
+        ctx.font = '17px Times New Roman';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(node.id, node.x, node.y);
